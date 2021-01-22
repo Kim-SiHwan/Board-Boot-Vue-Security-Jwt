@@ -44,6 +44,7 @@ public class SampleController {
         Member member = Member.builder()
                 .username(dto.getUsername())
                 .password(passwordEncoder.encode(dto.getPassword()))
+                .nickname(dto.getNickname())
                 .role("ROLE_USER")
                 .build();
 
