@@ -28,15 +28,13 @@ public class SampleController {
     private final AuthenticationManagerBuilder managerBuilder;
     private final JwtTokenProvider tokenProvider;
     private final PasswordEncoder passwordEncoder;
+
+
     @GetMapping("/test")
     public ResponseEntity hi(){
         return new ResponseEntity("testString! ", HttpStatus.OK);
     }
 
-    @GetMapping("/test2")
-    public ResponseEntity hi2(){
-        return new ResponseEntity("testString!2 ", HttpStatus.OK);
-    }
 
     @PostMapping("/save")
     public ResponseEntity save(@RequestBody JoinDto dto){
