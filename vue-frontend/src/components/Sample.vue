@@ -46,17 +46,16 @@ export default {
         password:this.password
       }
 
-      axios.post('http://localhost:8080/api/authenticate',this.loginDto)
-          .then(res=>{
-            localStorage.setItem("access_token","Bearer "+res.data.token);
-            console.log(res.data.token);
-          })
+      this.$store.dispatch('REQUEST_LOGIN',this.loginDto);
 
     },
     logout(){
-      this.$store.commit('deleteTokenInLocal');
+      this.$store.dispatch('REQUEST_LOGOUT');
+      this.$store.commit('setSnackBar',{msg:'로그아웃 완료', color:'success'});
+
     },
     checkAuth(){
+      console.log(this.$store.getters.isAuthenticated);
 
     }
     ,

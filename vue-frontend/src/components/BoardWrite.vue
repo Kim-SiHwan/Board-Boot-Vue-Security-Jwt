@@ -12,6 +12,7 @@
       </v-textarea>
 
       <v-btn @click="createBoard">글쓰기</v-btn>
+
     </v-container>
   </v-app>
 
