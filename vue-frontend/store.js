@@ -2,6 +2,8 @@ import Vue from "vue";
 import Vuex from "vuex";
 import member_api from "@/apis/member_api";
 import board_api from "@/apis/board_api";
+import reply_api from "@/apis/reply_api";
+
 Vue.use(Vuex);
 
 export const store = new Vuex.Store({
@@ -11,7 +13,9 @@ export const store = new Vuex.Store({
       token:'',
       username:'',
       boardList:[],
-      board:[]
+      board:[],
+      replies:[],
+      snackbar:{open:false, text:'',timeout:2500,color:'error'}
     },
     getters:{
       isAuthenticated(state){
@@ -50,6 +54,16 @@ export const store = new Vuex.Store({
             console.log("payload : "+payload);
             state.board=payload;
         },
+        setSnackBar(state,info){
+            state.snackbar.open=true;
+            state.snackbar.text=info.msg
+            state.snackbar.color=info.color;
+
+        },
+        getRepliesByBoardId(state,payload){
+            console.log(payload);
+            state.replies=payload.data;
+        }
 
 
     },
@@ -71,18 +85,22 @@ export const store = new Vuex.Store({
                 console.log(response.data.token);
                 store.commit('setTokenInLocal',response.data);
                 console.log(context);
-
+                store.commit('setSnackBar',
+                    {msg:member.username+'님 반갑습니다.', color:'success'}
+                    );
                 return response;
             }catch (e) {
-                console.log("실패했습니다.")
+                store.commit('setSnackBar',
+                    {msg:'비밀번호 혹은 아이디를 확인해주세요.', color:'error'}
+                );
             }
         },
         async REQUEST_LOGOUT(){
-            try{
-                store.commit('deleteTokenInLocal');
-            }catch (e) {
-                console.log("로그아웃 실패")
-            }
+            store.commit('deleteTokenInLocal');
+            store.commit('setSnackBar',
+                {msg:'로그아웃 되었습니다.', color:'info'}
+            );
+
         },
         async REQUEST_BOARD_LIST(){
             try{
@@ -104,10 +122,31 @@ export const store = new Vuex.Store({
         async REQUEST_CREATE_BOARD(context,board){
             try{
                 await board_api.createBoard(board);
+                store.commit('setSnackBar',
+                    {msg:'게시글이 등록되었습니다.', color:'success'}
+                );
             }catch (e) {
                 console.log("글 작성 실패");
             }
+        },
+        async REQUEST_GET_REPLIES(context,boardId){
+            try{
+                const response = await reply_api.getReplies(boardId);
+                console.log("REPLY : "+response.data);
+                store.commit('getRepliesByBoardId',response);
+            }catch (e){
+                console.log("댓글 로딩 실패")
+            }
+        },
+        async REQUEST_CREATE_REPLY(context,payload){
+            try{
+                const response = await reply_api.createReply(payload.boardId,payload.reply);
+                store.commit('getRepliesByBoardId',response);
+            }catch (e) {
+                console.log("댓글 작성 실패")
+            }
         }
+
     }
 
 });
