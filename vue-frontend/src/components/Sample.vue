@@ -42,8 +42,8 @@ export default {
     },
     login(){
       this.loginDto={
-        username:this.username,
-        password:this.password
+        username:"user",
+        password:"user"
       }
 
       this.$store.dispatch('REQUEST_LOGIN',this.loginDto);

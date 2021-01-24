@@ -1,27 +1,36 @@
 <template>
   <v-app>
-    <v-container>
+    <v-container style="width: 1200px">
       <v-data-table
           :headers="headers"
           :items="boardList"
+          :page.sync="page"
+          :items-per-page="itemsPerPage"
+          @page-count="pageCount= $event"
           class="elevation-1"
       >
         <template v-slot:item="boardList">
           <tr>
-            <td width="300"><router-link :to="{path:'/detail',query:{boardId:boardList.item.id}}">{{boardList.item.title}}</router-link></td>
+            <td width="800" ><router-link :to="{path:'/detail',query:{boardId:boardList.item.id}}" style="color: black; text-decoration: none">{{boardList.item.title}}</router-link> <small>({{boardList.item.replyCount}})</small></td>
 
-            <td>{{boardList.item.username}}</td>
-            <td width="100" align="center">{{boardList.item.read}}</td>
-            <td>{{boardList.item.createDate.substring(0,10)}}</td>
+            <td width="200">{{boardList.item.username}}</td>
+            <td width="150" align="center">{{boardList.item.read}}</td>
+            <td width="200">{{boardList.item.createDate.substring(0,10)}}</td>
           </tr>
         </template>
 
       </v-data-table>
+      <v-pagination
+          v-model="page"
+          :length="pageCount">
+
+      </v-pagination>
 
       <button @click="getBoard">asdd</button>
       <router-link to="/write" v-if="$store.getters.isAuthenticated">
         <v-btn
-            color="primary">
+            color="primary"
+            class="float-right">
           <v-icon dark>
             mdi-pencil
           </v-icon>
@@ -38,6 +47,10 @@ export default {
   name: "Board",
   data(){
     return{
+      page:1,
+      pageCount:0,
+      itemsPerPage:20,
+
       headers:[
         {
           text:'제목',
