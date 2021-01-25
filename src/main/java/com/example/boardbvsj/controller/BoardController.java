@@ -6,6 +6,7 @@ import com.example.boardbvsj.dto.boardDto.BoardUpdateRequestDto;
 import com.example.boardbvsj.entity.Board;
 import com.example.boardbvsj.service.BoardService;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -48,7 +49,7 @@ public class BoardController {
         String msg="";
         String username= SecurityContextHolder.getContext().getAuthentication().getName();
         BoardResponseDto boardResponseDto = boardService.findOne(boardId);
-        if(username.equals(boardResponseDto.getUsername())){
+        if(username.equals(boardResponseDto.getUsername())||username.equals("admin")){
             msg="삭제완료";
             boardService.deleteBoard(boardId);
             return new ResponseEntity(msg,HttpStatus.OK);

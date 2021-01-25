@@ -1,6 +1,7 @@
 package com.example.boardbvsj.service;
 
 import com.example.boardbvsj.dto.boardDto.BoardResponseDto;
+import com.example.boardbvsj.dto.boardDto.BoardUpdateRequestDto;
 import com.example.boardbvsj.entity.Board;
 import com.example.boardbvsj.entity.Member;
 import com.example.boardbvsj.repository.BoardRepository;
@@ -19,8 +20,10 @@ import java.util.stream.Collectors;
 public class BoardService {
     private final BoardRepository boardRepository;
     private final MemberRepository memberRepository;
+
+
     public List<BoardResponseDto> findAll(){
-        List<Board> boards = boardRepository.findAll();
+        List<Board> boards = boardRepository.findAllDesc();
         List<BoardResponseDto> list = boards.stream()
                 .map(m -> new BoardResponseDto(m))
                 .collect(Collectors.toList());
@@ -32,6 +35,7 @@ public class BoardService {
         return new BoardResponseDto(board);
     }
 
+    @Transactional
     public Long createBoard(Board board, String username){
         Optional<Member> member = memberRepository.findByUsername(username);
         board.setMember(member.get());
@@ -39,4 +43,23 @@ public class BoardService {
         boardRepository.save(board);
         return board.getId();
     }
+
+    @Transactional
+    public void deleteBoard(Long boardId){
+        Board board= boardRepository.findById(boardId).get();
+        boardRepository.delete(board);
+    }
+
+    @Transactional
+    public void updateBoard(Long boardId,BoardUpdateRequestDto boardUpdateRequestDto){
+        Board board= boardRepository.findById(boardId).get();
+        board.changeText(boardUpdateRequestDto.getUpdateTitle(), boardUpdateRequestDto.getUpdateContent());
+    }
+    @Transactional
+    public void addReadCount(Long boardId){
+        Board board = boardRepository.findById(boardId).get();
+        board.addReadCount();
+    }
+
+
 }

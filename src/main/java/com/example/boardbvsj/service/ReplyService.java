@@ -31,6 +31,11 @@ public class ReplyService {
         return list;
     }
 
+    public ReplyResponseDto findOne(Long boardId,Long replyId){
+
+        return new ReplyResponseDto(replyRepository.findById(replyId).get());
+    }
+
     @Transactional
     public void createReply(Reply reply,String username, Long boardId){
         Board board=boardRepository.findById(boardId).get();
@@ -38,5 +43,18 @@ public class ReplyService {
         reply.setBoard(board);
         reply.setMember(member.get());
         replyRepository.save(reply);
+    }
+
+
+    @Transactional
+    public void deleteReply(Long replyId){
+        Reply reply = replyRepository.findById(replyId).get();
+        replyRepository.delete(reply);
+    }
+
+    @Transactional
+    public void updateReply(Long replyId, String updateReplyContent){
+        Reply reply = replyRepository.findById(replyId).get();
+        reply.changeText(updateReplyContent);
     }
 }

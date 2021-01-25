@@ -1,6 +1,7 @@
 <template>
   <v-app>
     <v-container>
+
       <v-data-table
           :headers="headers"
           :items="replies"
@@ -8,21 +9,21 @@
           :page.sync="page"
           class="elevation-1"
           no-data-text="첫 댓글을 작성해보세요!"
-          @page-count="pageCount= $event"
-
-      >
+          @page-count="pageCount= $event">
 
         <template v-slot:item="replies">
           <tr>
+
             <td width="500">
 
               <v-textarea
                   no-resize
                   outlined
+                  class="mt-5"
                   readonly="readonly"
                   rows="4"
-                  style="overflow: auto"
                   v-bind:value="replies.item.content"
+                  v-bind:ref="replies.item.id"
               >
               </v-textarea>
             </td>
@@ -31,16 +32,17 @@
             <td width="100">
 
               <v-icon
+
                   small
                   class="mr-2"
                   color="blue"
-                  @click="updateReplyForm(replies.item.id)">
+                  @click="updateReplyForm(replies.item.id,replies.item.username)">
                 mdi-pencil
               </v-icon>
               <v-icon
                   small
                   color="red"
-                  @click="deleteReply(replies.item.id)"
+                  @click="deleteReply(replies.item.id,replies.item.username)"
               >
                 mdi-delete
               </v-icon>
@@ -61,14 +63,45 @@
           no-resize
           outlined
           rows="3"
-      >
+          v-on:keyup.enter="addReply">
 
       </v-textarea>
 
 
+      <v-btn
+          @click="addReply"
+          color="primary"
+          class="float-right">
+        <v-icon dark>
+          mdi-pencil
+        </v-icon>
+      </v-btn>
 
-      <button @click="addReply">addReply</button>
 
+      <v-row justify="center">
+        <v-dialog v-model="dialog" persistent max-width="450">
+          <v-card>
+            <v-card-title class="headline">댓글 수정</v-card-title>
+            <v-textarea
+                style="width: 90%; margin-left: 17px"
+                v-model="updateReply.replyUpdateContent"
+                label="수정할 내용을 입력해주세요."
+                no-resize
+                outlined
+                rows="4"
+                v-bind:placeholder="replyContent.content"
+                >
+
+            </v-textarea>
+
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="blue darken-1" text @click="updateReplySubmit(replyContent.id)">수정하기</v-btn>
+              <v-btn color="red darken-1" text @click="dialog = false">취소하기</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-row>
     </v-container>
   </v-app>
 
@@ -117,29 +150,58 @@ export default {
         boardId: this.$route.query.boardId,
         reply: this.reply
       });
+      this.reply.content=''
     },
-    updateReplyForm(){
-      this.updateReply.flag=true;
-    },
-    updateReplySubmit(replyId){
-      this.updateReply={
-        id:replyId,
-        updateContent:this.updateReply.replyUpdateContent
+    updateReplyForm(replyId,username){
+      if(this.reply.username != username){
+        this.$store.commit('setSnackBar',
+            {msg:'작성자만 수정할 수 있습니다.', color:'error'}
+        );
+        return false;
       }
-      this.$store.dispatch('REQUEST_UPDATE_REPLY',this.updateReply);
-    },
-    deleteReply(replyId){
+
+      this.dialog=true;
       this.ids={
         id:replyId,
         boardId:this.$route.query.boardId
       }
-      this.$store.dispatch('REQUEST_DELETE_REPLY',this.ids);
+      this.$store.dispatch('REQUEST_REPLY_FOR_UPDATE',this.ids);
+      console.log(replyId);
+    },
+    updateReplySubmit(replyId){
+      this.updateReply={
+        id:replyId,
+        boardId:this.$route.query.boardId,
+        replyUpdateContent:this.updateReply.replyUpdateContent
+      }
+      this.$store.dispatch('REQUEST_UPDATE_REPLY',this.updateReply);
+      this.dialog=false;
+      this.updateReply.replyUpdateContent='';
+
+    },
+    deleteReply(replyId,username){
+      if(this.reply.username=="admin" || this.reply.username == username){
+        this.ids={
+          id:replyId,
+          boardId:this.$route.query.boardId
+        }
+        this.$store.dispatch('REQUEST_DELETE_REPLY',this.ids);
+      }else{
+        this.$store.commit('setSnackBar',
+            {msg:'작성자만 삭제할 수 있습니다.', color:'error'}
+        );
+        return false;
+      }
+
     },
 
   },
   computed:{
     replies() {
       return this.$store.state.replies;
+    },
+    replyContent(){
+      return this.$store.state.replyContent;
     }
   },
   created() {

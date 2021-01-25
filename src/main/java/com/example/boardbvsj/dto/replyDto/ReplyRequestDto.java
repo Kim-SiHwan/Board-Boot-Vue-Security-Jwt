@@ -24,6 +24,8 @@ public class ReplyRequestDto {
 
     private Long boardId;
 
+    private String replyUpdateContent;
+
     public Reply toEntity(ReplyRequestDto replyRequestDto) {
         return Reply.createReply()
                 .content(replyRequestDto.getContent())
