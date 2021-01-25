@@ -2,6 +2,7 @@ package com.example.boardbvsj.controller;
 
 import com.example.boardbvsj.dto.boardDto.BoardRequestDto;
 import com.example.boardbvsj.dto.boardDto.BoardResponseDto;
+import com.example.boardbvsj.dto.boardDto.BoardSearchDto;
 import com.example.boardbvsj.dto.boardDto.BoardUpdateRequestDto;
 import com.example.boardbvsj.entity.Board;
 import com.example.boardbvsj.service.BoardService;
@@ -20,13 +21,13 @@ import java.util.List;
 public class BoardController {
     private final BoardService boardService;
 
-    public List<BoardResponseDto> getBoards(){
-        return boardService.findAll();
+    public List<BoardResponseDto> getBoards(BoardSearchDto searchDto){
+        return boardService.findAll(searchDto);
     }
 
     @GetMapping("/board")
-    public ResponseEntity getAll(){
-        return new ResponseEntity(getBoards(), HttpStatus.OK);
+    public ResponseEntity getAll(BoardSearchDto searchDto){
+        return new ResponseEntity(getBoards(searchDto), HttpStatus.OK);
     }
 
     @GetMapping("/board/{boardId}")

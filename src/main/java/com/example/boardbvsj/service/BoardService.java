@@ -1,6 +1,7 @@
 package com.example.boardbvsj.service;
 
 import com.example.boardbvsj.dto.boardDto.BoardResponseDto;
+import com.example.boardbvsj.dto.boardDto.BoardSearchDto;
 import com.example.boardbvsj.dto.boardDto.BoardUpdateRequestDto;
 import com.example.boardbvsj.entity.Board;
 import com.example.boardbvsj.entity.Member;
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -22,11 +24,15 @@ public class BoardService {
     private final MemberRepository memberRepository;
 
 
-    public List<BoardResponseDto> findAll(){
-        List<Board> boards = boardRepository.findAllDesc();
+    public List<BoardResponseDto> findAll(BoardSearchDto boardSearchDto){
+
+        List<Board> boards = (List<Board>) boardRepository.findAll(boardRepository.makePredicate(boardSearchDto.getType(), boardSearchDto.getKeyword()));
+
+//        List<Board> boards = boardRepository.findAllDesc();
         List<BoardResponseDto> list = boards.stream()
                 .map(m -> new BoardResponseDto(m))
                 .collect(Collectors.toList());
+        Collections.reverse(list);
         return list;
     }
 
