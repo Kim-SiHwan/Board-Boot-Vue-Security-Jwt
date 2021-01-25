@@ -1,9 +1,9 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import router from "@/routes/index"
 import member_api from "@/apis/member_api";
 import board_api from "@/apis/board_api";
 import reply_api from "@/apis/reply_api";
-
 Vue.use(Vuex);
 
 export const store = new Vuex.Store({
@@ -15,6 +15,7 @@ export const store = new Vuex.Store({
       boardList:[],
       board:[],
       replies:[],
+      replyContent:'',
       snackbar:{open:false, text:'',timeout:2500,color:'error'}
     },
     getters:{
@@ -38,7 +39,9 @@ export const store = new Vuex.Store({
             console.log(payload);
             state.token=payload.token;
             state.username=payload.username;
+            state.likeFlag=false;
             localStorage.setItem("access_token","Bearer "+payload.token);
+            router.push('/board');
         },
         deleteTokenInLocal(state){
             state.token="";
@@ -63,6 +66,9 @@ export const store = new Vuex.Store({
         getRepliesByBoardId(state,payload){
             console.log(payload);
             state.replies=payload.data;
+        },
+        setReplyContent(state,payload){
+            state.replyContent=payload.data;
         }
 
 
@@ -143,7 +149,69 @@ export const store = new Vuex.Store({
                 const response = await reply_api.createReply(payload.boardId,payload.reply);
                 store.commit('getRepliesByBoardId',response);
             }catch (e) {
+                store.commit('setSnackBar',
+                    {msg:'로그인이 필요한 서비스입니다.', color:'warning'}
+                );
                 console.log("댓글 작성 실패")
+            }
+        },
+        async REQUEST_DELETE_BOARD(context,payload){
+            try{
+                await board_api.deleteBoard(payload);
+                store.commit('setSnackBar',
+                    {msg:'게시글이 삭제되었습니다.', color:'success'}
+                );
+                router.push('/board');
+            }catch (e) {
+                store.commit('setSnackBar',
+                    {msg:'삭제에 실패하였습니다.', color:'error'}
+                );
+            }
+        },
+        async REQUEST_UPDATE_BOARD(context,payload){
+            try{
+                console.log("PATYLSOCASD" ,payload.id);
+                await board_api.updateBoard(payload);
+                store.commit('setSnackBar',
+                    {msg:'게시글이 수정되었습니다.', color:'success'});
+
+            }catch (e) {
+                store.commit('setSnackBar',
+                    {msg:'수정에 실패하였습니다.', color:'error'}
+                );
+            }
+        },
+        async REQUEST_DELETE_REPLY(context,payload){
+            try{
+                const response= await reply_api.deleteReply(payload);
+                store.commit('getRepliesByBoardId',response);
+            }catch (e) {
+                store.commit('setSnackBar',
+                    {msg:'댓글 삭제를 실패하였습니다.', color:'error'}
+                );
+            }
+        },
+        async REQUEST_REPLY_FOR_UPDATE(context,payload){
+            try{
+                const response = await reply_api.getReply(payload);
+                store.commit('setReplyContent',response);
+            }catch (e) {
+                store.commit('setSnackBar',
+                    {msg:'댓글 가져오기를 실패하였습니다.', color:'error'}
+                );
+            }
+        },
+        async REQUEST_UPDATE_REPLY(context,payload){
+            try{
+                const response= await reply_api.updateReply(payload);
+                store.commit('getRepliesByBoardId',response);
+                store.commit('setSnackBar',
+                    {msg:'댓글이 수정되었습니다.', color:'success'}
+                );
+            }catch (e) {
+                store.commit('setSnackBar',
+                    {msg:'댓글 수정을 실패하였습니다.', color:'error'}
+                );
             }
         }
 

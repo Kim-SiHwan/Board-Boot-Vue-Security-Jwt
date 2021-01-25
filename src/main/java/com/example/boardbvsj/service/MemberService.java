@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,11 +18,12 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class MemberService implements UserDetailsService {
     private final MemberRepository repository;
 
+    @Transactional
     public String save(Member member) {
-        System.out.println("save : " + member.getUsername() + " " + member.getPassword() + " " + member.getRole());
         if (validateDuplicateMember(member)) {
             repository.save(member);
             return "가입완료!";
@@ -32,7 +34,6 @@ public class MemberService implements UserDetailsService {
 
     private Boolean validateDuplicateMember(Member member) {
         Optional getMember = repository.findByUsername(member.getUsername());
-        System.out.println(getMember);
         if (!getMember.isEmpty()) {
             return false;
         }
@@ -41,7 +42,6 @@ public class MemberService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) {
-        System.out.println("load : " + username);
         Member member = repository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("해당 유저가 없습니다."));
         List<GrantedAuthority> authorities = new ArrayList<>();

@@ -1,5 +1,5 @@
 import axios from "axios";
-import {store} from "../../store";
+import Send from "@/apis/common_api";
 
 function getBoards(){
     return axios.get('/api/board');
@@ -10,10 +10,25 @@ function getBoard(boardId){
 }
 
 function createBoard(board){
-    console.log("token");
-    console.log(store.state.token);
-    return axios.post('/api/board',board,{
-        headers:{'Authorization' : localStorage.getItem("access_token")}
-    });
+    return Send({
+        url:'/api/board',
+        data:board,
+        method:'POST'
+    })
 }
-export default {getBoard,getBoards,createBoard}
+
+function deleteBoard(boardId){
+    return Send({
+        url:'/api/board/'+boardId,
+        method:'DELETE'
+    })
+}
+
+function updateBoard(board){
+
+    return axios.put('/api/board/'+board.id,board,{
+        headers:{'Authorization' : localStorage.getItem("access_token")}
+
+    })
+}
+export default {getBoard,getBoards,createBoard,deleteBoard,updateBoard}

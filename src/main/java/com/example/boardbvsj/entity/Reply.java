@@ -5,6 +5,8 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -39,6 +41,9 @@ public class Reply {
     public void setMember(Member member) {
         this.member = member;
         this.member.getReplies().add(this);
+    }
+    public void changeText(String content) {
+        this.content = content;
     }
 
     public void setBoard(Board board) {

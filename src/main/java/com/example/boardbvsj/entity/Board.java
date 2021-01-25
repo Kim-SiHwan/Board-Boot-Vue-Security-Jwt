@@ -24,6 +24,9 @@ public class Board {
     private LocalDateTime createDate;
     private int read;
 
+    @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE)
+    private List<Reply> replies =new ArrayList<>();
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
@@ -44,6 +47,7 @@ public class Board {
         this.content = content;
     }
 
+
     @Builder(builderClassName = "makeBoard", builderMethodName = "makeBoard")
     public Board(Long id, String title, String content, LocalDateTime createDate, int read) {
         this.id = id;
@@ -51,5 +55,6 @@ public class Board {
         this.content = content;
         this.createDate = createDate;
         this.read = read;
+
     }
 }

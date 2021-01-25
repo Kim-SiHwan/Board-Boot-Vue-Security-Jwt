@@ -3,6 +3,7 @@ package com.example.boardbvsj.config;
 import com.example.boardbvsj.jwt.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -21,6 +22,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtTokenProvider tokenProvider;
     private final CorsFilter corsFilter;
+    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     @Override
     public void configure(WebSecurity web) {
         web.ignoring()
@@ -41,6 +44,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // token을 사용하는 방식이기 때문에 csrf를 disable합니다.
                 .csrf().disable()
                 .addFilterBefore(corsFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling()
+                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                .accessDeniedHandler(jwtAccessDeniedHandler)
+                .and()
+
                 // enable h2-console
                 .headers()
                 .frameOptions()
@@ -57,7 +65,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/test").permitAll()
                 .antMatchers("/api/save").permitAll()
                 .antMatchers("/api/authenticate").permitAll()
-
+                .antMatchers(HttpMethod.GET,"/api/board").permitAll()
+                .antMatchers(HttpMethod.GET,"/api/board/*").permitAll()
+                .antMatchers(HttpMethod.GET,"/api/replies/*").permitAll()
                 .anyRequest().authenticated()
 
                 .and()

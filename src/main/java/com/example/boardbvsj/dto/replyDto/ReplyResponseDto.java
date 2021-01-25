@@ -9,13 +9,14 @@ import java.time.LocalDateTime;
 @Getter
 public class ReplyResponseDto {
     private Long id;
-    private String userName;
+    private String username;
     private String content;
     private LocalDateTime createDate;
 
+
     public ReplyResponseDto(Reply reply) {
         this.id = reply.getId();
-        this.userName = reply.getMember().getUsername();
+        this.username = reply.getMember().getUsername();
         this.content = reply.getContent();
         this.createDate = reply.getCreateDate();
     }

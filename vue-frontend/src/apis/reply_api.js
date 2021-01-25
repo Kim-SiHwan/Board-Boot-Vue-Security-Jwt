@@ -1,13 +1,39 @@
 import axios from "axios";
-
+import Send from "./common_api"
 function getReplies(boardId){
     return axios.get('/api/replies/'+boardId);
 }
 
+function getReply(ids){
+    return Send({
+        url:'/api/replies/'+ids.boardId+'/'+ids.id,
+        method:'GET'
+    })
+}
 function createReply(boardId,reply){
-    return axios.post('/api/replies/'+boardId,reply,{
-        headers:{'Authorization' : localStorage.getItem("access_token")}
+    return Send({
+        url:'/api/replies/'+boardId,
+        data:reply,
+        method:'POST'
     })
 }
 
-export default {getReplies,createReply}
+function deleteReply(ids){
+    return Send({
+        url:'/api/replies/'+ids.boardId+'/'+ids.id,
+        method:'DELETE'
+    })
+
+}
+
+function updateReply(reply){
+    return Send({
+        url:'/api/replies/'+reply.id,
+        data:reply,
+        method:'PUT'
+    })
+/*    return axios.put('/api/replies/'+reply.id,reply,{
+        headers:{'Authorization' : localStorage.getItem("access_token")}
+    })*/
+}
+export default {getReply,getReplies,createReply,deleteReply,updateReply}

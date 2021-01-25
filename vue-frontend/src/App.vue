@@ -1,43 +1,41 @@
 <template>
   <v-app >
-<!--
+
     <v-app-bar
         absolute
         color="gray"
         dark
     >
-      <v-app-bar-nav-icon></v-app-bar-nav-icon>
 
-      <v-toolbar-title>Title</v-toolbar-title>
+      <v-toolbar-title>
+        <router-link to="/board"
+                     style="color: white; text-decoration: none">
+          Kim's Board
+        </router-link>
+      </v-toolbar-title>
 
       <v-spacer></v-spacer>
-      <router-link to="/join">      <v-btn icon>
-        회원가입
-      </v-btn></router-link>
-      <router-link to="/sample">      <v-btn icon>
-        로그인
-      </v-btn></router-link>
+      <v-spacer></v-spacer>
 
 
-
-      <v-btn icon>
-        <v-icon>mdi-magnify</v-icon>
+      <v-btn  class="pr-15" v-if="!$store.getters.isAuthenticated">
+        <router-link to="/login"
+                     style="color: white; text-decoration: none">로그인</router-link>
       </v-btn>
 
-      <v-btn icon>
-        <v-icon>mdi-heart</v-icon>
+      <v-btn  class="pr-15 pt-4" v-else @click="logout" >
+        <p style="color: white; text-decoration: none">로그아웃</p>
       </v-btn>
-
-      <v-btn icon>
-        <v-icon>mdi-dots-vertical</v-icon>
+      <v-btn >
+        <router-link to="/join"
+                     style="color: white; text-decoration: none">회원가입</router-link>
       </v-btn>
-    </v-app-bar>-->
+      <v-spacer></v-spacer>
 
-    <v-container style="width: 1200px">
-      <router-link to="/join">go Board</router-link>
-      <router-link to="/sample">go SAMPLE</router-link>
 
-      <router-link to="/board">go Board</router-link>
+    </v-app-bar>
+
+    <v-container style="width: 1200px; padding-top: 120px">
       <v-snackbar
           v-model="$store.state.snackbar.open"
           :color="$store.state.snackbar.color"
@@ -63,5 +61,10 @@ export default {
   data: () => ({
     //
   }),
+  methods:{
+    logout(){
+      this.$store.dispatch('REQUEST_LOGOUT');
+    }
+  }
 };
 </script>

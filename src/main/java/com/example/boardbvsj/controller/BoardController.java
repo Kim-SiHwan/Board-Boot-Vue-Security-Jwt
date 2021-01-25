@@ -38,7 +38,6 @@ public class BoardController {
 
     @PostMapping("/board")
     public ResponseEntity createBoard(@RequestBody BoardRequestDto requestDto){
-        System.out.println(requestDto.getTitle()+" "+requestDto.getContent());
         Long boardId=boardService.createBoard(requestDto.toEntity(requestDto), requestDto.getUsername());
         return new ResponseEntity(boardId,HttpStatus.CREATED);
 

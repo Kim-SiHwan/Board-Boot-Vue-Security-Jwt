@@ -24,6 +24,8 @@
         </v-card-subtitle>
         <v-textarea
             v-if="update.flag"
+            outlined
+            rows="24"
             label="수정할 내용을 입력하세요."
             v-bind:placeholder="board.data.content"
             v-model="update.updateContent">
@@ -31,20 +33,8 @@
         </v-textarea>
 
       </v-card>
-      <v-btn
-          icon
-          color="deep-orange"
-      >
-        <v-icon>mdi-thumb-up</v-icon>
-      </v-btn>
 
-      <v-btn
-          icon
-          color="deep-orange"
-      >
-        <v-icon>mdi-thumb-down</v-icon>
-      </v-btn>
-      <div class="float-right" v-if="this.$store.getters.isAuthenticated && this.$store.state.username == board.data.username">
+      <div class="float-right" v-if="this.$store.getters.isAuthenticated && (this.$store.state.username == board.data.username || this.$store.state.username=='admin')">
         <v-btn
           v-if="update.flag"
           @click="updateBoardSubmit"
@@ -115,7 +105,10 @@ export default {
     updateBoardSubmit(){
       this.$store.dispatch('REQUEST_UPDATE_BOARD',this.update);
       this.updateBoard();
+      this.update.updateContent='';
+      this.update.updateTitle='';
       this.$store.dispatch('REQUEST_BOARD',this.$route.query.boardId);
+
     },
 
   },

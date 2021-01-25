@@ -3,7 +3,6 @@
     <v-container>
       <v-text-field
           v-model="board.title"
-
           :rules="rules.titleRules"
 
           label="제목"
@@ -12,7 +11,6 @@
       </v-text-field>
       <v-textarea
           :rules="rules.contentRules"
-
           v-model="board.content"
           label="내용"
           no-resize

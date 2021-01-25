@@ -1,22 +1,26 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import Join from "@/components/Join";
-import Sample from "@/components/Sample";
 import Board from "@/components/Board";
 import BoardDetail from "@/components/BoardDetail";
 import BoardWrite from "@/components/BoardWrite";
+import Login from "@/components/Login";
 
 Vue.use(Router); //vue 라우터 사용
 
 export default new Router({ //라우터 연결
     routes: [
         {
-            path:'/join',
-            component:Join
+            path: '/',
+            redirect:'/board'
         },
         {
-            path:'/sample',
-            component: Sample
+            path:'/login',
+            component: Login
+        },
+        {
+            path:'/join',
+            component:Join
         },
         {
             path:'/board',
@@ -29,7 +33,8 @@ export default new Router({ //라우터 연결
         {
             path: '/write',
             component: BoardWrite
-        }
+        },
+
 
 
 

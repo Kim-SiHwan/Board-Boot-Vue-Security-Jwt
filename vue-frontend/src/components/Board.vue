@@ -26,7 +26,6 @@
 
       </v-pagination>
 
-      <button @click="getBoard">asdd</button>
       <router-link to="/write" v-if="$store.getters.isAuthenticated">
         <v-btn
             color="primary"
@@ -67,11 +66,6 @@ export default {
           text:'작성일'
         }
       ]
-    }
-  },
-  methods:{
-    getBoard(){
-      console.log(this.$store.getters.getBoardList);
     }
   },
   created() {

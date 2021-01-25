@@ -1,14 +1,11 @@
 package com.example.boardbvsj.controller;
 
-import com.example.boardbvsj.dto.boardDto.BoardResponseDto;
 import com.example.boardbvsj.dto.replyDto.ReplyRequestDto;
 import com.example.boardbvsj.dto.replyDto.ReplyResponseDto;
 import com.example.boardbvsj.service.ReplyService;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Request;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
