@@ -14,7 +14,8 @@
             </v-text-field>
 
             <v-text-field  class="pt-10 pl-3 pr-3" label="Password" prepend-icon="mdi-lock"
-                          required type="password" v-model="password">
+                          required type="password" v-model="password"
+                          v-on:keyup.enter="login">
             </v-text-field>
 
             <v-btn

@@ -28,7 +28,17 @@ public class BoardService {
 
         List<Board> boards = (List<Board>) boardRepository.findAll(boardRepository.makePredicate(boardSearchDto.getType(), boardSearchDto.getKeyword()));
 
-//        List<Board> boards = boardRepository.findAllDesc();
+//      List<Board> boards = boardRepository.findAllDesc();
+        List<BoardResponseDto> list = boards.stream()
+                .map(m -> new BoardResponseDto(m))
+                .collect(Collectors.toList());
+        Collections.reverse(list);
+        return list;
+    }
+    public List<BoardResponseDto> findAllBest(){
+
+        List<Board> boards = boardRepository.findAllDesc();
+
         List<BoardResponseDto> list = boards.stream()
                 .map(m -> new BoardResponseDto(m))
                 .collect(Collectors.toList());
@@ -66,6 +76,7 @@ public class BoardService {
         Board board = boardRepository.findById(boardId).get();
         board.addReadCount();
     }
+
 
 
 }

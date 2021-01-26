@@ -20,13 +20,7 @@
       >
 
       </v-textarea>
-      <v-textarea
-          :rules="rules.contentRules"
-          v-model="board.content">
-
-      </v-textarea>
-
-      <v-btn @click="createBoard">글쓰기</v-btn>
+      <v-btn color="primary" class="float-right" @click="createBoard">글쓰기</v-btn>
 
     </v-container>
   </v-app>
@@ -71,6 +65,7 @@ export default {
 
   created() {
     this.board.username = this.$store.state.username;
+    window.location.href='#';
     this.setRules();
   }
 }

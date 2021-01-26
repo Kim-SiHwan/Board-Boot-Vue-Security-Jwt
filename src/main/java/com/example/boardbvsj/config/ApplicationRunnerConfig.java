@@ -5,6 +5,7 @@ import com.example.boardbvsj.entity.Board;
 import com.example.boardbvsj.entity.Member;
 import com.example.boardbvsj.entity.Reply;
 import com.example.boardbvsj.service.BoardService;
+import com.example.boardbvsj.service.LikeService;
 import com.example.boardbvsj.service.MemberService;
 import com.example.boardbvsj.service.ReplyService;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ public class ApplicationRunnerConfig implements ApplicationRunner {
     private final MemberService memberService;
     private final BoardService boardService;
     private final ReplyService replyService;
+    private final LikeService likeService;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
@@ -37,27 +39,51 @@ public class ApplicationRunnerConfig implements ApplicationRunner {
                 .password(pwEncoder.encode("user"))
                 .role("ROLE_USER")
                 .build();
+        Member user2 = Member.builder()
+                .username("user2")
+                .nickname("김시환")
+                .password(pwEncoder.encode("user2"))
+                .role("ROLE_USER")
+                .build();
         memberService.save(admin);
         memberService.save(user);
+        memberService.save(user2);
 
-        for(int i=1; i<=10; i++){
+        for(int i=1; i<=300; i++){
             Board board = Board.makeBoard()
                     .title("SampleTile"+i)
                     .content("SampleContent"+i)
                     .createDate(LocalDateTime.now())
                     .build();
             boardService.createBoard(board,"user");
+            int r= (int)(Math.random()*20)+1;
+            for(int j=0; j<r; j++){
+
+                Reply reply = Reply.createReply()
+                        .content("SAMPLE REPLY"+j)
+                        .createDate(LocalDateTime.now())
+                        .build();
+                replyService.createReply(reply,"user",Long.parseLong(String.valueOf(i)));
+            }
+
+
         }
 
-        for(int i=1; i<=20; i++){
-            Reply reply = Reply.createReply()
-                    .content("SAMPLEREPLY"+i)
-                    .createDate(LocalDateTime.now())
-                    .build();
-            replyService.createReply(reply,"user",10L);
-        }
+        likeService.pushLike(300L,"user");
+        likeService.pushLike(300L,"admin");
+        likeService.pushLike(300L,"user2");
 
+        likeService.pushLike(3L,"user");
+        likeService.pushLike(3L,"admin");
+        likeService.pushLike(3L,"user2");
 
+        likeService.pushLike(10L,"user");
+        likeService.pushLike(10L,"admin");
+        likeService.pushLike(10L,"user2");
+
+        likeService.pushLike(200L,"user");
+        likeService.pushLike(200L,"admin");
+        likeService.pushLike(200L,"user2");
 
 
     }

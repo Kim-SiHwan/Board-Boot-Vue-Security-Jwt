@@ -1,4 +1,4 @@
-package com.example.boardbvsj.dto;
+package com.example.boardbvsj.dto.memberDto;
 
 import lombok.*;
 

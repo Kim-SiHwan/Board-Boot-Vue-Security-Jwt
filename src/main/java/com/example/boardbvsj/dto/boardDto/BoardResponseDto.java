@@ -14,6 +14,7 @@ public class BoardResponseDto {
     private String username;
     private int read;
     private int replyCount;
+    private int likeCount;
 
     public BoardResponseDto(Board board) {
         this.id = board.getId();
@@ -22,6 +23,7 @@ public class BoardResponseDto {
         this.createDate = board.getCreateDate();
         this.username = board.getMember().getUsername();
         this.replyCount = board.getReplies().size();
+        this.likeCount = board.getBoardLikes().size();
         this.read = board.getRead();
     }
 }

@@ -1,10 +1,22 @@
 import axios from "axios";
 import Send from "@/apis/common_api";
 
-function getBoards(){
-    return axios.get('/api/board');
+function getBoards(vo){
+    return Send({
+        url:'/api/board',
+        params:{
+            keyword:vo
+        },
+        method:'GET'
+    })
 }
 
+function getBests(){
+    return Send({
+        url:'/api/board/best',
+        method:'GET'
+    });
+}
 function getBoard(boardId){
     return axios.get('/api/board/'+boardId);
 }
@@ -31,4 +43,4 @@ function updateBoard(board){
 
     })
 }
-export default {getBoard,getBoards,createBoard,deleteBoard,updateBoard}
+export default {getBoard,getBests,getBoards,createBoard,deleteBoard,updateBoard}

@@ -3,6 +3,7 @@
     <v-container>
 
       <v-data-table
+          id="replyDiv"
           :headers="headers"
           :items="replies"
           :items-per-page="itemsPerPage"
@@ -116,7 +117,7 @@ export default {
       dialog: false,
       page: 1,
       pageCount: 0,
-      itemsPerPage: 3,
+      itemsPerPage: 12,
       reply: {
         username: '',
         content: ''
@@ -146,11 +147,18 @@ export default {
   },
   methods:{
     addReply() {
+      if(this.reply.username==''){
+        this.$store.commit('setSnackBar',
+            {msg:'로그인이 필요한 서비스입니다.', color:'warning'}
+        );
+        return false;
+      }
       this.$store.dispatch('REQUEST_CREATE_REPLY', {
         boardId: this.$route.query.boardId,
         reply: this.reply
       });
       this.reply.content=''
+      window.location.href='#replyDiv';
     },
     updateReplyForm(replyId,username){
       if(this.reply.username != username){

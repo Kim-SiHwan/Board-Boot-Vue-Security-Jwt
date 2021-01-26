@@ -1,4 +1,4 @@
-package com.example.boardbvsj.dto;
+package com.example.boardbvsj.dto.memberDto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

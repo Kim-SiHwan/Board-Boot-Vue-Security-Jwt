@@ -1,7 +1,7 @@
 package com.example.boardbvsj.controller;
 
-import com.example.boardbvsj.dto.JoinDto;
-import com.example.boardbvsj.dto.LoginDto;
+import com.example.boardbvsj.dto.memberDto.JoinDto;
+import com.example.boardbvsj.dto.memberDto.LoginDto;
 import com.example.boardbvsj.entity.Member;
 import com.example.boardbvsj.jwt.JwtFilter;
 import com.example.boardbvsj.jwt.JwtTokenProvider;
@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;

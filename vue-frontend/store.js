@@ -4,6 +4,7 @@ import router from "@/routes/index"
 import member_api from "@/apis/member_api";
 import board_api from "@/apis/board_api";
 import reply_api from "@/apis/reply_api";
+import like_api from "@/apis/like_api";
 Vue.use(Vuex);
 
 export const store = new Vuex.Store({
@@ -16,6 +17,7 @@ export const store = new Vuex.Store({
       board:[],
       replies:[],
       replyContent:'',
+      keyword:'default',
       snackbar:{open:false, text:'',timeout:2500,color:'error'}
     },
     getters:{
@@ -27,12 +29,13 @@ export const store = new Vuex.Store({
           return state.boardList;
       },
       getBoard(state){
-          console.log("?상태 ")
-          console.log(state.board.title);
           return state.board;
       }
     },
     mutations:{
+        setKeyword(state,payload){
+          state.keyword=payload;
+        },
         setTokenInLocal(state,payload){
             console.log("setToken")
             console.log(state)
@@ -108,9 +111,18 @@ export const store = new Vuex.Store({
             );
 
         },
-        async REQUEST_BOARD_LIST(){
+        async REQUEST_BOARD_LIST(context,payload){
             try{
-                const response= await board_api.getBoards();
+                store.commit('setKeyword',payload);
+                const response= await board_api.getBoards(payload);
+                store.commit('startBoardList',response);
+            }catch (e) {
+                console.log("불러오기 실패")
+            }
+        },
+        async REQUEST_BEST_BOARDS(){
+            try{
+                const response= await board_api.getBests();
                 store.commit('startBoardList',response);
             }catch (e) {
                 console.log("불러오기 실패")
@@ -150,7 +162,7 @@ export const store = new Vuex.Store({
                 store.commit('getRepliesByBoardId',response);
             }catch (e) {
                 store.commit('setSnackBar',
-                    {msg:'로그인이 필요한 서비스입니다.', color:'warning'}
+                    {msg:'로그인에 실패했습니다..', color:'warning'}
                 );
                 console.log("댓글 작성 실패")
             }
@@ -212,6 +224,17 @@ export const store = new Vuex.Store({
                 store.commit('setSnackBar',
                     {msg:'댓글 수정을 실패하였습니다.', color:'error'}
                 );
+            }
+        },
+        async REQUEST_LIKE(context,payload){
+            try{
+                const response = await like_api.pushLike(payload);
+                console.log(response);
+                store.commit('setSnackBar',
+                    {msg:response.data,color:'info'});
+            }catch (e) {
+                store.commit('setSnackBar',
+                    {msg:'추천을 실패했습니다.',color:'error'});
             }
         }
 

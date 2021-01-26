@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface ReplyRepository extends JpaRepository<Reply,Long> {
-    @Query("select r from Reply r order by r.id desc ")
+    @Query("select r from Reply r where r.board.id =:boardId order by r.id desc ")
     List<Reply> findAllByBoard_Id(Long boardId);
 }

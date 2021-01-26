@@ -64,7 +64,16 @@
       </div>
 
       <br><br><br>
-
+      <v-btn
+          class="ma-2"
+          text
+          icon
+          color="blue lighten-2"
+          @click="pushLike"
+      >
+        <v-icon>mdi-thumb-up</v-icon>
+      </v-btn>
+      {{board.data.likeCount}}
       <hr>
       <reply></reply>
     </v-container>
@@ -90,6 +99,7 @@ export default {
         updateTitle:'',
         updateContent:''
       },
+      likeDto:''
 
 
     }
@@ -110,6 +120,19 @@ export default {
       this.$store.dispatch('REQUEST_BOARD',this.$route.query.boardId);
 
     },
+    pushLike(){
+      if(this.$store.state.username==''){
+        this.$store.commit('setSnackBar',
+            {msg:'로그인이 필요한 서비스입니다.', color:'warning'}
+        );
+        return false;
+      }
+      this.likeDto={
+        boardId: this.$route.query.boardId,
+        username: this.$store.state.username
+      }
+      this.$store.dispatch('REQUEST_LIKE',this.likeDto);
+    }
 
   },
   computed: {
