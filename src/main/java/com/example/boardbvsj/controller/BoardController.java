@@ -21,14 +21,22 @@ import java.util.List;
 public class BoardController {
     private final BoardService boardService;
 
-    public List<BoardResponseDto> getBoards(BoardSearchDto searchDto){
-        return boardService.findAll(searchDto);
+    public List<BoardResponseDto> getBoards(BoardSearchDto searchDto,int type){
+        if(type==0)
+            return boardService.findAll(searchDto);
+        return boardService.findAllBest();
     }
 
     @GetMapping("/board")
     public ResponseEntity getAll(BoardSearchDto searchDto){
-        return new ResponseEntity(getBoards(searchDto), HttpStatus.OK);
+        return new ResponseEntity(getBoards(searchDto,0), HttpStatus.OK);
     }
+
+    @GetMapping("/board/best")
+    public ResponseEntity getBests(){
+        return new ResponseEntity(getBoards(null,1),HttpStatus.OK);
+    }
+
 
     @GetMapping("/board/{boardId}")
     public ResponseEntity getOne(@PathVariable("boardId") Long boardId){

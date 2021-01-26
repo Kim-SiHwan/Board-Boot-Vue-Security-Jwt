@@ -12,7 +12,7 @@ import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import java.util.List;
 
 public interface BoardRepository extends JpaRepository<Board,Long>, QuerydslPredicateExecutor<Board> {
-    @Query("select b from Board b order by b.id desc ")
+    @Query("select b from Board b where b.boardLikes.size>=3 order by b.id desc ")
     List<Board> findAllDesc();
 
     public default Predicate makePredicate(String type, String keyword){

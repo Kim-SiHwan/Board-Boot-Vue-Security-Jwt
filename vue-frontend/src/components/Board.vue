@@ -1,6 +1,7 @@
 <template>
   <v-app>
     <v-container style="width: 1200px">
+{{boardType}}
       <v-data-table
           :headers="headers"
           :items="boardList"
@@ -14,6 +15,7 @@
             <td width="800" ><router-link :to="{path:'/detail',query:{boardId:boardList.item.id}}" style="color: black; text-decoration: none">{{boardList.item.title}}</router-link> <small>({{boardList.item.replyCount}})</small></td>
 
             <td width="200">{{boardList.item.username}}</td>
+            <td width="150" align="center">{{boardList.item.likeCount}}</td>
             <td width="150" align="center">{{boardList.item.read}}</td>
             <td width="200">{{boardList.item.createDate.substring(0,10)}}</td>
           </tr>
@@ -36,6 +38,23 @@
         </v-btn>
       </router-link>
 
+      <v-chip
+          v-if="keyword!='default'"
+          color="blue"
+          text-color="white"
+          close
+          @click:close="removeFilter">
+        {{keyword}}
+      </v-chip>
+
+      <v-text-field
+          prepend-icon="mdi-magnify"
+
+          label="검색어 입력"
+          v-model="sKeyword"
+          v-on:keyup.enter="sBoard">
+
+      </v-text-field>
     </v-container>
 
   </v-app>
@@ -49,7 +68,7 @@ export default {
       page:1,
       pageCount:0,
       itemsPerPage:20,
-
+      sKeyword:'',
       headers:[
         {
           text:'제목',
@@ -60,6 +79,9 @@ export default {
           text:'글쓴이'
         },
         {
+          text:'추천수'
+        },
+        {
           text:'조회수'
         },
         {
@@ -68,12 +90,32 @@ export default {
       ]
     }
   },
+  methods:{
+    sBoard(){
+      this.$store.dispatch('REQUEST_BOARD_LIST',this.sKeyword);
+    },
+    removeFilter(){
+      this.$store.dispatch('REQUEST_BOARD_LIST','default');
+    },
+    getBoards(){
+      this.$store.dispatch('REQUEST_BOARD_LIST','default');
+    },
+    getBestBoards(){
+      this.$store.dispatch('REQUEST_BEST_BOARDS');
+    }
+  },
   created() {
-    this.$store.dispatch('REQUEST_BOARD_LIST')
+    this.getBoards();
   },
   computed:{
     boardList(){
       return this.$store.state.boardList;
+    },
+    keyword(){
+      return this.$store.state.keyword;
+    },
+    boardType(){
+      return this.$route.query.best?this.getBestBoards():this.getBoards();
     }
   }
 }

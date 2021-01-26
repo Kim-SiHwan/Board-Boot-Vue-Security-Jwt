@@ -8,7 +8,7 @@
     >
 
       <v-toolbar-title>
-        <router-link to="/board"
+        <router-link :to="{path:'/board'}"
                      style="color: white; text-decoration: none">
           Kim's Board
         </router-link>
@@ -16,7 +16,6 @@
 
       <v-spacer></v-spacer>
       <v-spacer></v-spacer>
-
 
       <v-btn  class="pr-15" v-if="!$store.getters.isAuthenticated">
         <router-link to="/login"
@@ -30,7 +29,12 @@
         <router-link to="/join"
                      style="color: white; text-decoration: none">회원가입</router-link>
       </v-btn>
-      <v-spacer></v-spacer>
+      <v-btn class="pr-15 pt-4">
+        <router-link :to="{path:'/board',query:{best:'Y'}}"
+                     style="color: white; text-decoration: none">
+          인기게시판
+        </router-link>
+      </v-btn>
 
 
     </v-app-bar>
@@ -64,6 +68,9 @@ export default {
   methods:{
     logout(){
       this.$store.dispatch('REQUEST_LOGOUT');
+    },
+    bests(){
+      this.$store.dispatch('REQUEST_BEST_BOARDS');
     }
   }
 };
