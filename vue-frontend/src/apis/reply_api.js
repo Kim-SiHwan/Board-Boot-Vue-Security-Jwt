@@ -1,7 +1,10 @@
 import axios from "axios";
 import Send from "./common_api"
 function getReplies(boardId){
-    return axios.get('/api/replies/'+boardId);
+    return Send({
+        url:'/api/replies/'+boardId,
+        method:'GET'
+    })
 }
 
 function getReply(ids){
