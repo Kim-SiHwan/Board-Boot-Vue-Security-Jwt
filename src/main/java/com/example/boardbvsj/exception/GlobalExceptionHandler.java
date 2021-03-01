@@ -1,10 +1,7 @@
 package com.example.boardbvsj.exception;
 
 import com.example.boardbvsj.dto.error.ErrorResponseDto;
-import com.example.boardbvsj.exception.customException.BoardNotFoundException;
-import com.example.boardbvsj.exception.customException.ReplyNotFoundException;
-import com.example.boardbvsj.exception.customException.UserNotFoundException;
-import com.example.boardbvsj.exception.customException.UsernameDuplicatedException;
+import com.example.boardbvsj.exception.customException.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,6 +43,12 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ErrorResponseDto> replyNotFoundException(ReplyNotFoundException e){
         log.info("BoardNotFoundException"+ e.getMessage());
         return new ResponseEntity<>(errorResponseDto(ErrorCode.DELETED_REPLY.getCode(),ErrorCode.DELETED_REPLY.getDescription()),HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(DifferentUsernameException.class)
+    protected ResponseEntity<ErrorResponseDto> differentUsernameException(DifferentUsernameException e){
+        log.info("DifferentUsernameException"+ e.getMessage());
+        return new ResponseEntity<>(errorResponseDto(ErrorCode.FORBIDDEN_ACCESS.getCode(),ErrorCode.FORBIDDEN_ACCESS.getDescription()),HttpStatus.BAD_REQUEST);
     }
 
     private ErrorResponseDto errorResponseDto(int code, String message){
