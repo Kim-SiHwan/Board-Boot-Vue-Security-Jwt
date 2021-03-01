@@ -1,9 +1,13 @@
 package com.example.boardbvsj.service;
 
+import com.example.boardbvsj.dto.replyDto.ReplyRequestDto;
 import com.example.boardbvsj.dto.replyDto.ReplyResponseDto;
 import com.example.boardbvsj.entity.Board;
 import com.example.boardbvsj.entity.Member;
 import com.example.boardbvsj.entity.Reply;
+import com.example.boardbvsj.exception.customException.BoardNotFoundException;
+import com.example.boardbvsj.exception.customException.ReplyNotFoundException;
+import com.example.boardbvsj.exception.customException.UserNotFoundException;
 import com.example.boardbvsj.repository.BoardRepository;
 import com.example.boardbvsj.repository.MemberRepository;
 import com.example.boardbvsj.repository.ReplyRepository;
@@ -11,8 +15,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,35 +30,41 @@ public class ReplyService {
     public List<ReplyResponseDto> findAll(Long boardId){
         List<Reply> replies = replyRepository.findAllByBoard_Id(boardId);
         List<ReplyResponseDto> list = replies.stream()
-                .map(m-> new ReplyResponseDto(m))
+                .map(ReplyResponseDto::new)
                 .collect(Collectors.toList());
+        Collections.reverse(list);
         return list;
     }
 
-    public ReplyResponseDto findOne(Long boardId,Long replyId){
-
-        return new ReplyResponseDto(replyRepository.findById(replyId).get());
+    public ReplyResponseDto findOne(Long replyId){
+        return new ReplyResponseDto(replyRepository.findById(replyId)
+        .orElseThrow(ReplyNotFoundException::new));
     }
 
     @Transactional
-    public void createReply(Reply reply,String username, Long boardId){
-        Board board=boardRepository.findById(boardId).get();
-        Optional<Member> member=memberRepository.findByUsername(username);
+    public void createReply(ReplyRequestDto replyRequestDto){
+        Board board=boardRepository.findById(replyRequestDto.getBoardId())
+                .orElseThrow(BoardNotFoundException::new);
+        Member member = memberRepository.findByUsername(replyRequestDto.getUsername())
+                .orElseThrow(UserNotFoundException::new);
+        Reply reply = replyRequestDto.toEntity(replyRequestDto);
         reply.setBoard(board);
-        reply.setMember(member.get());
+        reply.setMember(member);
         replyRepository.save(reply);
     }
 
 
     @Transactional
     public void deleteReply(Long replyId){
-        Reply reply = replyRepository.findById(replyId).get();
+        Reply reply = replyRepository.findById(replyId)
+                .orElseThrow(ReplyNotFoundException::new);
         replyRepository.delete(reply);
     }
 
     @Transactional
     public void updateReply(Long replyId, String updateReplyContent){
-        Reply reply = replyRepository.findById(replyId).get();
+        Reply reply = replyRepository.findById(replyId)
+                .orElseThrow(ReplyNotFoundException::new);
         reply.changeText(updateReplyContent);
     }
 }

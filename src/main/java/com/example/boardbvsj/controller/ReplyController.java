@@ -26,18 +26,15 @@ public class ReplyController {
         return new ResponseEntity(getReplies(boardId),HttpStatus.OK);
     }
 
-    @GetMapping("/replies/{boardId}/{replyId}")
-    public ResponseEntity getReply(@PathVariable("replyId")Long replyId,
-                                   @PathVariable("boardId")Long boardId){
-        return new ResponseEntity(replyService.findOne(boardId,replyId),HttpStatus.OK);
+    @GetMapping("/replies/{replyId}")
+    public ResponseEntity getReply(@PathVariable("replyId")Long replyId){
+        return new ResponseEntity(replyService.findOne(replyId),HttpStatus.OK);
     }
 
 
-    @PostMapping("/replies/{boardId}")
-    public ResponseEntity createReply(@PathVariable("boardId")Long boardId,
-                                      @RequestBody ReplyRequestDto replyRequestDto){
-        replyService.createReply(replyRequestDto.toEntity(replyRequestDto), replyRequestDto.getUsername(), boardId);
-        return new ResponseEntity(getReplies(boardId),HttpStatus.CREATED);
+    @PostMapping("/replies")
+    public void createReply(@RequestBody ReplyRequestDto replyRequestDto){
+        replyService.createReply(replyRequestDto);
     }
 
     @DeleteMapping("/replies/{boardId}/{replyId}")

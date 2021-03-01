@@ -1,4 +1,3 @@
-import axios from "axios";
 import Send from "./common_api"
 function getReplies(boardId){
     return Send({

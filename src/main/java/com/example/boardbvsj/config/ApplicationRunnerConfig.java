@@ -1,9 +1,9 @@
 package com.example.boardbvsj.config;
 
-import com.example.boardbvsj.dto.boardDto.BoardRequestDto;
+import com.example.boardbvsj.dto.replyDto.ReplyRequestDto;
 import com.example.boardbvsj.entity.Board;
 import com.example.boardbvsj.entity.Member;
-import com.example.boardbvsj.entity.Reply;
+import com.example.boardbvsj.repository.MemberRepository;
 import com.example.boardbvsj.service.BoardService;
 import com.example.boardbvsj.service.LikeService;
 import com.example.boardbvsj.service.MemberService;
@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
 public class ApplicationRunnerConfig implements ApplicationRunner {
     private final PasswordEncoder pwEncoder;
     private final MemberService memberService;
+    private final MemberRepository memberRepository;
     private final BoardService boardService;
     private final ReplyService replyService;
     private final LikeService likeService;
@@ -45,11 +46,11 @@ public class ApplicationRunnerConfig implements ApplicationRunner {
                 .password(pwEncoder.encode("user2"))
                 .role("ROLE_USER")
                 .build();
-        memberService.save(admin);
-        memberService.save(user);
-        memberService.save(user2);
+        memberRepository.save(admin);
+        memberRepository.save(user);
+        memberRepository.save(user2);
 
-        for(int i=1; i<=300; i++){
+        for(int i=1; i<=3; i++){
             Board board = Board.makeBoard()
                     .title("SampleTile"+i)
                     .content("SampleContent"+i)
@@ -59,31 +60,38 @@ public class ApplicationRunnerConfig implements ApplicationRunner {
             int r= (int)(Math.random()*20)+1;
             for(int j=0; j<r; j++){
 
-                Reply reply = Reply.createReply()
-                        .content("SAMPLE REPLY"+j)
+                ReplyRequestDto requestDto = ReplyRequestDto
+                        .builder()
+                        .boardId(Long.parseLong(String.valueOf(i)))
+                        .content("SAMPLE REPLY"+i)
                         .createDate(LocalDateTime.now())
+                        .username("user")
                         .build();
-                replyService.createReply(reply,"user",Long.parseLong(String.valueOf(i)));
+
+                replyService.createReply(requestDto);
             }
 
 
         }
 
-        likeService.pushLike(300L,"user");
+  /*      likeService.pushLike(300L,"user");
         likeService.pushLike(300L,"admin");
         likeService.pushLike(300L,"user2");
-
+*/
         likeService.pushLike(3L,"user");
         likeService.pushLike(3L,"admin");
         likeService.pushLike(3L,"user2");
-
+        likeService.pushLike(1L,"user");
+        likeService.pushLike(1L,"admin");
+        likeService.pushLike(1L,"user2");
+/*
         likeService.pushLike(10L,"user");
         likeService.pushLike(10L,"admin");
         likeService.pushLike(10L,"user2");
 
         likeService.pushLike(200L,"user");
         likeService.pushLike(200L,"admin");
-        likeService.pushLike(200L,"user2");
+        likeService.pushLike(200L,"user2");*/
 
 
     }

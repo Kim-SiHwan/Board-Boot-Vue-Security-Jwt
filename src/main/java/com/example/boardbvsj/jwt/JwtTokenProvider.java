@@ -2,23 +2,23 @@ package com.example.boardbvsj.jwt;
 
 import com.example.boardbvsj.service.MemberService;
 import io.jsonwebtoken.*;
-import lombok.RequiredArgsConstructor;
-import net.bytebuddy.implementation.bytecode.Throw;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
-import java.util.concurrent.ExecutionException;
 
 @Component
-@RequiredArgsConstructor
 public class JwtTokenProvider {
 
     private final MemberService memberService;
+    public JwtTokenProvider (@Lazy MemberService memberService){
+        this.memberService = memberService;
+    }
+
     @Value("${jwt.secret}")
     private String secret;
     @Value("${jwt.token-validity-in-seconds}")

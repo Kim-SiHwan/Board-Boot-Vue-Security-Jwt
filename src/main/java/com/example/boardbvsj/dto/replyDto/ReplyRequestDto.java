@@ -2,6 +2,7 @@ package com.example.boardbvsj.dto.replyDto;
 
 
 import com.example.boardbvsj.entity.Reply;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@Builder
 public class ReplyRequestDto {
 
     @NotEmpty(message = "댓글은 공백일 수 없습니다.\n\r 댓글을 입력해주세요.")

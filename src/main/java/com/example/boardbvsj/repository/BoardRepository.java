@@ -4,7 +4,6 @@ import com.example.boardbvsj.entity.Board;
 import com.example.boardbvsj.entity.QBoard;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
@@ -15,7 +14,7 @@ public interface BoardRepository extends JpaRepository<Board,Long>, QuerydslPred
     @Query("select b from Board b where b.boardLikes.size>=3 order by b.id desc ")
     List<Board> findAllDesc();
 
-    public default Predicate makePredicate(String type, String keyword){
+    default Predicate makePredicate( String keyword){
         BooleanBuilder b= new BooleanBuilder();
         QBoard board= QBoard.board;
         b.and(board.id.gt(0));
