@@ -14,7 +14,6 @@ import java.util.List;
 @Setter
 public class BoardRequestDto {
 
-    private Long boardId;
 
     private String title;
 
@@ -29,7 +28,6 @@ public class BoardRequestDto {
 
     public Board toEntity(BoardRequestDto boardRequestDto) {
         return Board.makeBoard()
-                .id(boardRequestDto.getBoardId())
                 .title(boardRequestDto.getTitle())
                 .content(boardRequestDto.getContent())
                 .createDate(LocalDateTime.now())

@@ -1,15 +1,16 @@
 package com.example.boardbvsj.service;
 
 import com.example.boardbvsj.dto.boardDto.BoardResponseDto;
-import com.example.boardbvsj.dto.boardDto.BoardSearchDto;
 import com.example.boardbvsj.dto.boardDto.BoardUpdateRequestDto;
 import com.example.boardbvsj.entity.Board;
 import com.example.boardbvsj.entity.Member;
 import com.example.boardbvsj.exception.customException.BoardNotFoundException;
+import com.example.boardbvsj.exception.customException.DifferentUsernameException;
 import com.example.boardbvsj.exception.customException.UserNotFoundException;
 import com.example.boardbvsj.repository.BoardRepository;
 import com.example.boardbvsj.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,8 +27,6 @@ public class BoardService {
 
 
     public List<BoardResponseDto> findAll(String keyword){
-        System.out.println("키워드 : "+keyword);
-
         List<Board> boards = (List<Board>) boardRepository.findAll(boardRepository.makePredicate(keyword));
         List<BoardResponseDto> list = boards.stream()
                 .map(BoardResponseDto::new)
@@ -65,15 +64,24 @@ public class BoardService {
 
     @Transactional
     public void deleteBoard(Long boardId){
+        String username= SecurityContextHolder.getContext().getAuthentication().getName();
+        System.out.println(username);
         Board board= boardRepository.findById(boardId)
                 .orElseThrow(BoardNotFoundException::new);
+        if(!username.equals(board.getMember().getUsername())){
+            throw new DifferentUsernameException();
+        }
         boardRepository.delete(board);
     }
 
     @Transactional
-    public void updateBoard(Long boardId,BoardUpdateRequestDto boardUpdateRequestDto){
-        Board board= boardRepository.findById(boardId)
+    public void updateBoard(BoardUpdateRequestDto boardUpdateRequestDto){
+        String username= SecurityContextHolder.getContext().getAuthentication().getName();
+        Board board= boardRepository.findById(boardUpdateRequestDto.getBoardId())
                 .orElseThrow(BoardNotFoundException::new);
+        if(!username.equals(board.getMember().getUsername())){
+            throw new DifferentUsernameException();
+        }
         board.changeText(boardUpdateRequestDto.getUpdateTitle(), boardUpdateRequestDto.getUpdateContent());
     }
     @Transactional
