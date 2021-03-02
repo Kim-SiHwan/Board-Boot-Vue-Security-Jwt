@@ -1,10 +1,10 @@
 import Send from "@/apis/common_api";
 
-function pushLike(likeDto){
+function pushLike(payload){
     return Send({
         url:'/api/like',
-        data:likeDto,
-        method:'POST'
+        method:'POST',
+        data:payload,
     });
 }
 

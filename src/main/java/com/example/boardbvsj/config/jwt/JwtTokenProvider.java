@@ -1,4 +1,4 @@
-package com.example.boardbvsj.jwt;
+package com.example.boardbvsj.config.jwt;
 
 import com.example.boardbvsj.service.MemberService;
 import io.jsonwebtoken.*;
@@ -9,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 
 @Component
@@ -53,18 +54,18 @@ public class JwtTokenProvider {
     }
 
 
-    public boolean validateToken(String token) {
+    public boolean validateToken(String token, HttpServletRequest request) {
         try {
             Jwts.parserBuilder().setSigningKey(secret).build().parseClaimsJws(token);
             return true;
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
+            request.setAttribute("exception","InvalidTokenException");
         } catch (ExpiredJwtException e) {
-            System.out.println("토큰만료!");
-
-
-
+            request.setAttribute("exception","ExpiredTokenException");
         } catch (UnsupportedJwtException e) {
+            request.setAttribute("exception","UnsupportedTokenException");
         } catch (IllegalArgumentException e) {
+            request.setAttribute("exception","IllegalArgumentTokenException");
         }
         return false;
     }

@@ -1,44 +1,44 @@
 <template>
   <v-app>
-    <v-container style="width: 1200px">
-
+    <v-container>
       <v-card
           min-height="1000">
 
-        <v-card-title v-if="!update.flag">{{ board.data.title }}<small>({{ board.data.replyCount }})</small></v-card-title>
+        <v-card-title v-if="!update.flag">{{ board.title }}<small>({{ board.replyCount }})</small></v-card-title>
         <v-text-field
-          v-if="update.flag"
-          label="수정할 제목을 입력하세요."
-          v-bind:placeholder="board.data.title"
-          v-model="update.updateTitle">
+            v-if="update.flag"
+            v-model="update.updateTitle"
+            label="수정할 제목을 입력하세요."
+            v-bind:placeholder="board.title">
 
         </v-text-field>
-        <v-card-text>
-          작성자 : {{ board.data.username }}<br>
-          조회수 : {{ board.data.read }}<br>
-          작성일 : {{ board.data.createDate.substring(0, 10) }}
+        <v-card-text v-if="board">
+          작성자 : {{ board.username }}<br>
+          조회수 : {{ board.read }}<br>
+          작성일 : {{ board.createDate.substring(0, 10) }}
         </v-card-text>
         <v-divider class="mx-4"></v-divider>
-        <v-card-subtitle class="font-weight-bold" v-if="!update.flag">
-          {{ board.data.content }}
+        <v-card-subtitle v-if="!update.flag" class="font-weight-bold">
+          {{ board.content }}
         </v-card-subtitle>
         <v-textarea
             v-if="update.flag"
+            v-model="update.updateContent"
+            label="수정할 내용을 입력하세요."
             outlined
             rows="24"
-            label="수정할 내용을 입력하세요."
-            v-bind:placeholder="board.data.content"
-            v-model="update.updateContent">
+            v-bind:placeholder="board.content">
 
         </v-textarea>
 
       </v-card>
 
-      <div class="float-right" v-if="this.$store.getters.isAuthenticated && (this.$store.state.username == board.data.username || this.$store.state.username=='admin')">
+      <div v-if="this.$store.getters.isAuthenticated && (this.username == board.username || this.username=='admin')"
+           class="float-right">
         <v-btn
-          v-if="update.flag"
-          @click="updateBoardSubmit"
-          color="success"
+            v-if="update.flag"
+            color="success"
+            @click="updateBoardSubmit"
         >
           수정
         </v-btn>
@@ -50,9 +50,9 @@
           수정
         </v-btn>
         <v-btn
-          v-else
-          color="warning"
-          @click="updateBoard">
+            v-else
+            color="warning"
+            @click="updateBoard">
           취소
         </v-btn>
         <v-btn
@@ -66,14 +66,14 @@
       <br><br><br>
       <v-btn
           class="ma-2"
-          text
-          icon
           color="blue lighten-2"
+          icon
+          text
           @click="pushLike"
       >
         <v-icon>mdi-thumb-up</v-icon>
       </v-btn>
-      {{board.data.likeCount}}
+      {{ board.likeCount }}
       <hr>
       <reply></reply>
     </v-container>
@@ -87,51 +87,50 @@ import Reply from "@/components/Reply";
 
 export default {
   name: "BoardDetail",
-  components:{
-    'reply':Reply
+  components: {
+    'reply': Reply
   },
 
   data() {
     return {
-      update:{
-        flag:false,
-        id:'',
-        updateTitle:'',
-        updateContent:''
+      boardId: '',
+      update: {
+        flag: false,
+        boardId: '',
+        updateTitle: '',
+        updateContent: ''
       },
-      likeDto:''
+      likeDto: ''
 
 
     }
   },
   methods: {
 
-    updateBoard(){
+    updateBoard() {
       this.update.flag = !this.update.flag;
     },
-    deleteBoard(){
-      this.$store.dispatch('REQUEST_DELETE_BOARD',this.$route.query.boardId);
+    deleteBoard() {
+      this.$store.dispatch('REQUEST_DELETE_BOARD', this.boardId);
     },
-    updateBoardSubmit(){
-      this.$store.dispatch('REQUEST_UPDATE_BOARD',this.update);
-      this.updateBoard();
-      this.update.updateContent='';
-      this.update.updateTitle='';
-      this.$store.dispatch('REQUEST_BOARD',this.$route.query.boardId);
+    updateBoardSubmit() {
+      this.update.boardId = this.boardId;
+      this.$store.dispatch('REQUEST_UPDATE_BOARD', this.update);
+      this.update.flag = false;
 
     },
-    pushLike(){
-      if(this.$store.state.username==''){
+    pushLike() {
+      if (this.username === '') {
         this.$store.commit('setSnackBar',
-            {msg:'로그인이 필요한 서비스입니다.', color:'warning'}
+            {msg: '로그인이 필요한 서비스입니다.', color: 'warning'}
         );
         return false;
       }
-      this.likeDto={
-        boardId: this.$route.query.boardId,
+      this.likeDto = {
+        boardId: this.boardId,
         username: this.$store.state.username
       }
-      this.$store.dispatch('REQUEST_LIKE',this.likeDto);
+      this.$store.dispatch('REQUEST_LIKE', this.likeDto);
     }
 
   },
@@ -139,11 +138,15 @@ export default {
     board() {
       return this.$store.state.board;
     },
+    username() {
+      return this.$store.state.username;
+    }
 
   },
   created() {
-    this.update.id=this.$route.query.boardId;
-    this.$store.dispatch('REQUEST_BOARD', this.$route.query.boardId);
+    this.update.id = this.$route.query.boardId;
+    this.boardId = this.$route.query.boardId;
+    this.$store.dispatch('REQUEST_BOARD', this.boardId);
 
   }
 

@@ -1,17 +1,18 @@
 package com.example.boardbvsj.service;
 
+import com.example.boardbvsj.dto.boardDto.BoardLikeDto;
 import com.example.boardbvsj.entity.Board;
 import com.example.boardbvsj.entity.BoardLike;
 import com.example.boardbvsj.entity.Member;
+import com.example.boardbvsj.exception.customException.BoardNotFoundException;
+import com.example.boardbvsj.exception.customException.UserNotFoundException;
 import com.example.boardbvsj.repository.BoardLikeRepository;
 import com.example.boardbvsj.repository.BoardRepository;
 import com.example.boardbvsj.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,23 +23,24 @@ public class LikeService {
     private final MemberRepository memberRepository;
 
 
-    public String pushLike(Long boardId, String username){
-        Board board = boardRepository.findById(boardId).get();
-        String msg="";
-        Optional<Member> member= memberRepository.findByUsername(username);
-        System.out.println(member);
-        BoardLike boardLike= new BoardLike();
-        boardLike.setBoard(board);
-        boardLike.setMember(member.get());
-        Optional<BoardLike> getBoardLike = boardLikeRepository.findByBoardIdAndMember_Username(boardId,username);
-        if(getBoardLike.isEmpty()){
+    @Transactional
+    public String pushLike(BoardLikeDto likeDto){
+
+        BoardLike boardLike = boardLikeRepository.findByBoardIdAndMember_Username(likeDto.getBoardId(),likeDto.getUsername())
+                .orElseGet(BoardLike::new);
+        if(boardLike.getId()==null){
+            Board board = boardRepository.findById(likeDto.getBoardId()).
+                    orElseThrow(BoardNotFoundException::new);
+            Member member = memberRepository.findByUsername(likeDto.getUsername())
+                    .orElseThrow(UserNotFoundException::new);
+            boardLike.addMember(member);
+            boardLike.addBoard(board);
             addLike(boardLike);
-            msg = "좋아요!";
-        }else{
-            removeLike(getBoardLike.get().getId());
-            msg = "좋아요 취소";
+            return "좋아요!";
         }
-        return msg;
+        removeLike(boardLike.getId());
+        return "좋아요 취소";
+
 
     }
 
@@ -49,7 +51,6 @@ public class LikeService {
 
     @Transactional
     public void removeLike(Long id){
-        BoardLike boardLike = boardLikeRepository.findById(id).get();
-        boardLikeRepository.delete(boardLike);
+        boardLikeRepository.deleteById(id);
     }
 }

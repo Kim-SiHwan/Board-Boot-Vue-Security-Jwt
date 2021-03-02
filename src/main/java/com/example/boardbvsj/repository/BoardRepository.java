@@ -1,31 +1,30 @@
 package com.example.boardbvsj.repository;
 
 import com.example.boardbvsj.entity.Board;
-import com.example.boardbvsj.entity.QBoard;
-import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.types.Predicate;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface BoardRepository extends JpaRepository<Board,Long>, QuerydslPredicateExecutor<Board> {
     @Query("select b from Board b where b.boardLikes.size>=3 order by b.id desc ")
+    @EntityGraph(attributePaths = {"member","replies","boardLikes"},type = EntityGraph.EntityGraphType.LOAD)
     List<Board> findAllDesc();
 
-    default Predicate makePredicate( String keyword){
-        BooleanBuilder b= new BooleanBuilder();
-        QBoard board= QBoard.board;
-        b.and(board.id.gt(0));
-        if(keyword.equals("default"))
-            return b;
+    @Override
+    @EntityGraph(attributePaths = {"member","replies","boardLikes"},type = EntityGraph.EntityGraphType.LOAD)
+    Optional<Board> findById(Long id);
 
-        b.and(board.title.like("%" + keyword + "%").
-                or(board.member.username.like("%" + keyword + "%"))
-        .or(board.content.like("%" + keyword + "%")));
-        return b;
-    }
+    @Override
+    @EntityGraph(attributePaths = {"member","replies","boardLikes"},type = EntityGraph.EntityGraphType.LOAD)
+    List<Board> findAll();
+
+    @Query("SELECT b FROM Board b WHERE b.title LIKE %?1% OR b.content LIKE %?1% OR b.member.username LIKE %?1%" )
+    @EntityGraph(attributePaths = {"member","replies","boardLikes"},type = EntityGraph.EntityGraphType.LOAD)
+    List<Board> findAllSearchResult(String keyword);
 
 
 }

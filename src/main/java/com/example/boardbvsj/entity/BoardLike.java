@@ -24,11 +24,11 @@ public class BoardLike {
     private Member member;
 
 
-    public void setMember(Member member) {
+    public void addMember(Member member) {
         this.member = member;
     }
 
-    public void setBoard(Board board) {
+    public void addBoard(Board board) {
         this.board = board;
         this.board.getBoardLikes().add(this);
     }

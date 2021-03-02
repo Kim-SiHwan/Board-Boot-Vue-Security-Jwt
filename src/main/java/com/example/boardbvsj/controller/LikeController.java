@@ -17,8 +17,8 @@ public class LikeController {
     private final LikeService likeService;
 
     @PostMapping("/like")
-    public ResponseEntity setLike(@RequestBody BoardLikeDto boardLikeDto){
-        String msg =likeService.pushLike(boardLikeDto.getBoardId(), boardLikeDto.getUsername());
-        return new ResponseEntity(msg, HttpStatus.OK);
+    public ResponseEntity<String> setLike(@RequestBody BoardLikeDto boardLikeDto){
+        String msg =likeService.pushLike(boardLikeDto);
+        return new ResponseEntity<>(msg, HttpStatus.OK);
     }
 }

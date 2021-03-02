@@ -27,8 +27,8 @@ public class BoardService {
 
 
     public List<BoardResponseDto> findAll(String keyword){
-        List<Board> boards = (List<Board>) boardRepository.findAll(boardRepository.makePredicate(keyword));
-        List<BoardResponseDto> list = boards.stream()
+        List<Board>boards = boardRepository.findAllSearchResult(keyword);
+       List<BoardResponseDto> list = boards.stream()
                 .map(BoardResponseDto::new)
                 .collect(Collectors.toList());
         Collections.reverse(list);
@@ -57,7 +57,7 @@ public class BoardService {
     public void createBoard(Board board, String username){
         Member member = memberRepository.findByUsername(username)
                 .orElseThrow(UserNotFoundException::new);
-        board.setMember(member);
+        board.addMember(member);
         member.getBoards().add(board);
         boardRepository.save(board);
     }
@@ -65,10 +65,9 @@ public class BoardService {
     @Transactional
     public void deleteBoard(Long boardId){
         String username= SecurityContextHolder.getContext().getAuthentication().getName();
-        System.out.println(username);
         Board board= boardRepository.findById(boardId)
                 .orElseThrow(BoardNotFoundException::new);
-        if(!username.equals(board.getMember().getUsername())){
+        if (!username.equals("admin") && !username.equals(board.getMember().getUsername())) {
             throw new DifferentUsernameException();
         }
         boardRepository.delete(board);

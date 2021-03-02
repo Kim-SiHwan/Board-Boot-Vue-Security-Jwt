@@ -11,9 +11,8 @@ public enum ErrorCode {
     INVALID_TOKEN(4,"잘못된 토큰정보입니다. 다시 로그인을 진행해주세요."),
     EXPIRED_TOKEN(5,"만료된 토큰입니다. 다시 로그인을 진행해주세요."),
     NON_LOGIN(6,"로그인이 필요합니다."),
-    FILE_SIZE_OVER(7,"사진당 1MB 미만의 사진만 가능합니다."),
-    DELETED_BOARD(8,"존재하지 않는 게시글입니다."),
-    DELETED_REPLY(9,"존재하지 않는 댓글입니다."),
+    DELETED_BOARD(7,"존재하지 않는 게시글입니다."),
+    DELETED_REPLY(8,"존재하지 않는 댓글입니다."),
     FORBIDDEN_ACCESS(9,"작성자만 수정, 삭제 할 수 있습니다.");
 
 

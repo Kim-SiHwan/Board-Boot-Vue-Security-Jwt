@@ -1,13 +1,13 @@
-import axios from "axios";
 import Send from "@/apis/common_api";
 
-function getBoards(vo){
+function getAllBoardsByKeyword(payload){
+
     return Send({
         url:'/api/board',
+        method:'GET',
         params:{
-            keyword:vo
-        },
-        method:'GET'
+            keyword:payload
+        }
     })
 }
 
@@ -17,15 +17,18 @@ function getBests(){
         method:'GET'
     });
 }
-function getBoard(boardId){
-    return axios.get('/api/board/'+boardId);
+function getBoard(payload){
+    return Send({
+        url:'/api/board/'+payload,
+        method:'GET'
+    })
 }
 
 function createBoard(board){
     return Send({
         url:'/api/board',
-        data:board,
-        method:'POST'
+        method:'POST',
+        data:board
     })
 }
 
@@ -36,11 +39,12 @@ function deleteBoard(boardId){
     })
 }
 
-function updateBoard(board){
-
-    return axios.put('/api/board/'+board.id,board,{
-        headers:{'Authorization' : localStorage.getItem("access_token")}
-
+function updateBoard(payload){
+    return Send({
+        url:'/api/board',
+        method:'PATCH',
+        data:payload
     })
+
 }
-export default {getBoard,getBests,getBoards,createBoard,deleteBoard,updateBoard}
+export default {getBoard,getBests,getAllBoardsByKeyword,createBoard,deleteBoard,updateBoard}

@@ -1,23 +1,27 @@
 <template>
   <v-app>
-    <v-container style="width: 1200px">
-{{boardType}}
+    <v-container>
       <v-data-table
           :headers="headers"
           :items="boardList"
-          :page.sync="page"
           :items-per-page="itemsPerPage"
-          @page-count="pageCount= $event"
+          :page.sync="page"
           class="elevation-1"
+          hide-default-footer
+          @page-count="pageCount= $event"
       >
         <template v-slot:item="boardList">
           <tr>
-            <td width="800" ><router-link :to="{path:'/detail',query:{boardId:boardList.item.id}}" style="color: black; text-decoration: none">{{boardList.item.title}}</router-link> <small>({{boardList.item.replyCount}})</small></td>
+            <td width="750">
+              <router-link :to="{path:'/detail',query:{boardId:boardList.item.id}}"
+                           style="color: black; text-decoration: none">{{ boardList.item.title }}
+              </router-link>
+              <small>({{ boardList.item.replyCount }})</small></td>
 
-            <td width="200">{{boardList.item.username}}</td>
-            <td width="150" align="center">{{boardList.item.likeCount}}</td>
-            <td width="150" align="center">{{boardList.item.read}}</td>
-            <td width="200">{{boardList.item.createDate.substring(0,10)}}</td>
+            <td width="200">{{ boardList.item.username }}</td>
+            <td align="center" width="150">{{ boardList.item.likeCount }}</td>
+            <td align="center" width="150">{{ boardList.item.read }}</td>
+            <td v-if="boardList.item.createDate" width="200">{{ boardList.item.createDate.substring(0, 10) }}</td>
           </tr>
         </template>
 
@@ -28,10 +32,10 @@
 
       </v-pagination>
 
-      <router-link to="/write" v-if="$store.getters.isAuthenticated">
+      <router-link v-if="$store.getters.isAuthenticated" to="/write">
         <v-btn
-            color="primary"
-            class="float-right">
+            class="float-right"
+            color="primary">
           <v-icon dark>
             mdi-pencil
           </v-icon>
@@ -39,20 +43,20 @@
       </router-link>
 
       <v-chip
-          v-if="keyword!='default'"
+          v-if="keyword!==''"
+          close
           color="blue"
           text-color="white"
-          close
           @click:close="removeFilter">
-        {{keyword}}
+        {{ keyword }}
       </v-chip>
 
       <v-text-field
-          prepend-icon="mdi-magnify"
+          v-model="searchKeyword"
 
           label="검색어 입력"
-          v-model="sKeyword"
-          v-on:keyup.enter="sBoard">
+          prepend-icon="mdi-magnify"
+          v-on:keyup.enter="searchBoard">
 
       </v-text-field>
     </v-container>
@@ -63,60 +67,63 @@
 <script>
 export default {
   name: "Board",
-  data(){
-    return{
-      page:1,
-      pageCount:0,
-      itemsPerPage:20,
-      sKeyword:'',
-      headers:[
+  data() {
+    return {
+      page: 1,
+      pageCount: 0,
+      itemsPerPage: 20,
+      searchKeyword: '',
+      headers: [
         {
-          text:'제목',
-          align:'start',
-          sortable:false
+          text: '제목',
+          align: 'start',
+          sortable: false
         },
         {
-          text:'글쓴이'
+          text: '글쓴이'
         },
         {
-          text:'추천수'
+          text: '추천수'
         },
         {
-          text:'조회수'
+          text: '조회수'
         },
         {
-          text:'작성일'
+          text: '작성일'
         }
       ]
     }
   },
-  methods:{
-    sBoard(){
-      this.$store.dispatch('REQUEST_BOARD_LIST',this.sKeyword);
+  methods: {
+
+    removeFilter() {
+      this.$store.dispatch('REQUEST_BOARD_LIST', '');
     },
-    removeFilter(){
-      this.$store.dispatch('REQUEST_BOARD_LIST','default');
+    getBoards() {
+      this.$store.dispatch('REQUEST_BOARD_LIST', this.keyword);
     },
-    getBoards(){
-      this.$store.dispatch('REQUEST_BOARD_LIST','default');
-    },
-    getBestBoards(){
+    getBestBoards() {
       this.$store.dispatch('REQUEST_BEST_BOARDS');
+    },
+    searchBoard() {
+      this.$store.dispatch('REQUEST_BOARD_LIST', this.searchKeyword);
     }
   },
   created() {
+    if (this.$route.query.best) {
+      this.getBestBoards();
+      return;
+    }
     this.getBoards();
   },
-  computed:{
-    boardList(){
+  computed: {
+    boardList() {
       return this.$store.state.boardList;
     },
-    keyword(){
+    keyword() {
       return this.$store.state.keyword;
     },
-    boardType(){
-      return this.$route.query.best?this.getBestBoards():this.getBoards();
-    }
+
   }
 }
 </script>

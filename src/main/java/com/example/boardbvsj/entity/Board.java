@@ -6,8 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Slf4j
 @Entity
@@ -25,10 +25,10 @@ public class Board {
     private int read;
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE)
-    private List<Reply> replies =new ArrayList<>();
+    private Set<Reply> replies =new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE)
-    private List<BoardLike> boardLikes = new ArrayList<>();
+    private Set<BoardLike> boardLikes = new LinkedHashSet<>();
 
 
 
@@ -41,7 +41,7 @@ public class Board {
         this.read += 1;
     }
 
-    public void setMember(Member getMember) {
+    public void addMember(Member getMember) {
         member = getMember;
         member.getBoards().add(this);
     }

@@ -16,24 +16,21 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 @AllArgsConstructor
 public class JoinDto {
-    @NotNull
-    @Size(min = 3, max = 50)
+    @NotNull(message = "아이디는 필수 항목입니다.")
+    @Size(min = 3, max = 10, message ="아이디는 3자~10자 이내로 작성해주세요")
     private String username;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @NotNull
-    @Size(min = 3, max = 100)
+    @NotNull(message = "비밀번호는 필수 항목입니다.")
+    @Size(min = 3, max = 12, message = "비밀번호는 3자~12자 이내로 작성해주세요.")
     private String password;
 
-    @NotNull
-    @Size(min = 3, max = 50)
-    private String nickname;
+
 
     public Member toEntity(JoinDto joinDto, PasswordEncoder passwordEncoder){
         return Member
                 .builder()
                 .username(joinDto.getUsername())
-                .nickname(joinDto.getNickname())
                 .password(passwordEncoder.encode(joinDto.getPassword()))
                 .role("ROLE_USER")
                 .build();

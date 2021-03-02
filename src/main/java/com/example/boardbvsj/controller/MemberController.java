@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/api/member")
 @RequiredArgsConstructor
@@ -21,12 +23,12 @@ public class MemberController {
     }
 
     @PostMapping("/save")
-    public void save(@RequestBody JoinDto dto){
+    public void save(@RequestBody @Valid JoinDto dto){
         memberService.save(dto);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<MemberResponseDto> authorize(@RequestBody LoginDto loginDto){
+    public ResponseEntity<MemberResponseDto> authorize(@RequestBody @Valid LoginDto loginDto){
         return new ResponseEntity<>(memberService.login(loginDto),HttpStatus.OK);
     }
 

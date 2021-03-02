@@ -4,14 +4,14 @@
       <v-text-field
           v-model="board.title"
           :rules="rules.titleRules"
-
           label="제목"
+          outlined
       >
 
       </v-text-field>
       <v-textarea
-          :rules="rules.contentRules"
           v-model="board.content"
+          :rules="rules.contentRules"
           label="내용"
           no-resize
 
@@ -20,7 +20,7 @@
       >
 
       </v-textarea>
-      <v-btn color="primary" class="float-right" @click="createBoard">글쓰기</v-btn>
+      <v-btn class="float-right" color="primary" @click="createBoard">글쓰기</v-btn>
 
     </v-container>
   </v-app>
@@ -47,7 +47,7 @@ export default {
   methods: {
     createBoard() {
       this.$store.dispatch('REQUEST_CREATE_BOARD', this.board);
-      this.$router.replace({path: '/board'});
+
     },
     setRules() {
 
@@ -65,7 +65,7 @@ export default {
 
   created() {
     this.board.username = this.$store.state.username;
-    window.location.href='#';
+    window.location.href = '#';
     this.setRules();
   }
 }

@@ -20,13 +20,10 @@ public class ReplyRequestDto {
     @Size(min = 1, max = 100, message = "댓글은 1자 이상, 100자 이하로 입력해주세요.")
     private String content;
 
-    private LocalDateTime createDate;
-
     private String username;
 
     private Long boardId;
 
-    private String replyUpdateContent;
 
     public Reply toEntity(ReplyRequestDto replyRequestDto) {
         return Reply.createReply()

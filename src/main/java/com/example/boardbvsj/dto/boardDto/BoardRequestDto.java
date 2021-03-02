@@ -7,14 +7,13 @@ import lombok.Setter;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+
 
 @Getter
 @Setter
 public class BoardRequestDto {
-
-
+    @NotEmpty(message = "제목은 필수 항목입니다.")
+    @Size(min = 1, max = 20, message = "제목은 1자~20자 이내로 작성해주세요.")
     private String title;
 
     private String content;

@@ -1,6 +1,6 @@
 package com.example.boardbvsj.config;
 
-import com.example.boardbvsj.jwt.*;
+import com.example.boardbvsj.config.jwt.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
@@ -62,10 +62,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/h2/**").permitAll()
-                .antMatchers("/api/save").permitAll()
-                .antMatchers("/api/authenticate").permitAll()
+                .antMatchers("/api/member/save").permitAll()
+                .antMatchers("/api/member/login").permitAll()
                 .antMatchers(HttpMethod.GET,"/api/board").permitAll()
-                .antMatchers(HttpMethod.GET,"/api/board/*").permitAll()
+                .antMatchers(HttpMethod.GET,"/api/board/**").permitAll()
                 .antMatchers(HttpMethod.GET,"/api/replies/*").permitAll()
                 .anyRequest().authenticated()
 

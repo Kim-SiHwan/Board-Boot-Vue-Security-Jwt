@@ -5,8 +5,6 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
@@ -38,7 +36,7 @@ public class Reply {
         this.createDate = createDate;
     }
 
-    public void setMember(Member member) {
+    public void addMember(Member member) {
         this.member = member;
         this.member.getReplies().add(this);
     }
@@ -46,7 +44,7 @@ public class Reply {
         this.content = content;
     }
 
-    public void setBoard(Board board) {
+    public void addBoard(Board board) {
         this.board = board;
         this.board.getReplies().add(this);
     }

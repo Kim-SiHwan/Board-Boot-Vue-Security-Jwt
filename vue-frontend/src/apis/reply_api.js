@@ -1,41 +1,34 @@
 import Send from "./common_api"
-function getReplies(boardId){
+function getReplies(payload){
+    console.log(payload);
     return Send({
-        url:'/api/replies/'+boardId,
+        url:'/api/replies/'+payload,
         method:'GET'
     })
 }
 
-function getReply(ids){
+function createReply(payload){
     return Send({
-        url:'/api/replies/'+ids.boardId+'/'+ids.id,
-        method:'GET'
-    })
-}
-function createReply(boardId,reply){
-    return Send({
-        url:'/api/replies/'+boardId,
-        data:reply,
-        method:'POST'
+        url:'/api/replies',
+        method:'POST',
+        data:payload,
     })
 }
 
-function deleteReply(ids){
+function deleteReply(payload){
     return Send({
-        url:'/api/replies/'+ids.boardId+'/'+ids.id,
+        url:'/api/replies/'+payload,
         method:'DELETE'
     })
 
 }
 
-function updateReply(reply){
+function updateReply(payload) {
     return Send({
-        url:'/api/replies/'+reply.id,
-        data:reply,
-        method:'PUT'
+        url: '/api/replies',
+        method: 'PUT',
+        data: payload,
     })
-/*    return axios.put('/api/replies/'+reply.id,reply,{
-        headers:{'Authorization' : localStorage.getItem("access_token")}
-    })*/
 }
-export default {getReply,getReplies,createReply,deleteReply,updateReply}
+
+export default {getReplies,createReply,deleteReply,updateReply}

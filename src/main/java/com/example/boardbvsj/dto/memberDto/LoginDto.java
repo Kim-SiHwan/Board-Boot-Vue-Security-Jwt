@@ -3,7 +3,6 @@ package com.example.boardbvsj.dto.memberDto;
 import lombok.*;
 
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 @Getter
 @Setter
@@ -12,11 +11,9 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 public class LoginDto {
 
-    @NotNull
-    @Size(min = 3, max = 50)
+    @NotNull(message = "아이디는 필수 항목입니다.")
     private String username;
 
-    @NotNull
-    @Size(min = 3, max = 100)
+    @NotNull(message = "비밀번호는 필수 항목입니다.")
     private String password;
 }

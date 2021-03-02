@@ -1,4 +1,4 @@
-package com.example.boardbvsj.jwt;
+package com.example.boardbvsj.config.jwt;
 
 
 import org.springframework.security.access.AccessDeniedException;

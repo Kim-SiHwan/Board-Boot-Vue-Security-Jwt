@@ -1,5 +1,6 @@
 package com.example.boardbvsj.config;
 
+import com.example.boardbvsj.dto.boardDto.BoardLikeDto;
 import com.example.boardbvsj.dto.replyDto.ReplyRequestDto;
 import com.example.boardbvsj.entity.Board;
 import com.example.boardbvsj.entity.Member;
@@ -20,7 +21,6 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class ApplicationRunnerConfig implements ApplicationRunner {
     private final PasswordEncoder pwEncoder;
-    private final MemberService memberService;
     private final MemberRepository memberRepository;
     private final BoardService boardService;
     private final ReplyService replyService;
@@ -64,7 +64,6 @@ public class ApplicationRunnerConfig implements ApplicationRunner {
                         .builder()
                         .boardId(Long.parseLong(String.valueOf(i)))
                         .content("SAMPLE REPLY"+i)
-                        .createDate(LocalDateTime.now())
                         .username("user")
                         .build();
 
@@ -78,12 +77,25 @@ public class ApplicationRunnerConfig implements ApplicationRunner {
         likeService.pushLike(300L,"admin");
         likeService.pushLike(300L,"user2");
 */
-        likeService.pushLike(3L,"user");
-        likeService.pushLike(3L,"admin");
-        likeService.pushLike(3L,"user2");
-        likeService.pushLike(1L,"user");
-        likeService.pushLike(1L,"admin");
-        likeService.pushLike(1L,"user2");
+        BoardLikeDto boardLikeDto = new BoardLikeDto();
+        boardLikeDto.setBoardId(3L);
+        boardLikeDto.setUsername("user");
+        likeService.pushLike(boardLikeDto);
+        boardLikeDto.setBoardId(3L);
+        boardLikeDto.setUsername("admin");
+        likeService.pushLike(boardLikeDto);
+        boardLikeDto.setBoardId(3L);
+        boardLikeDto.setUsername("user2");
+        likeService.pushLike(boardLikeDto);
+        boardLikeDto.setBoardId(1L);
+        boardLikeDto.setUsername("user");
+        likeService.pushLike(boardLikeDto);
+        boardLikeDto.setBoardId(1L);
+        boardLikeDto.setUsername("admin");
+        likeService.pushLike(boardLikeDto);
+        boardLikeDto.setBoardId(1L);
+        boardLikeDto.setUsername("user2");
+        likeService.pushLike(boardLikeDto);
 /*
         likeService.pushLike(10L,"user");
         likeService.pushLike(10L,"admin");

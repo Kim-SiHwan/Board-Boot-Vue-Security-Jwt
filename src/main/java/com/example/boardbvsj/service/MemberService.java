@@ -5,7 +5,7 @@ import com.example.boardbvsj.dto.memberDto.LoginDto;
 import com.example.boardbvsj.dto.memberDto.MemberResponseDto;
 import com.example.boardbvsj.entity.Member;
 import com.example.boardbvsj.exception.customException.UsernameDuplicatedException;
-import com.example.boardbvsj.jwt.JwtTokenProvider;
+import com.example.boardbvsj.config.jwt.JwtTokenProvider;
 import com.example.boardbvsj.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

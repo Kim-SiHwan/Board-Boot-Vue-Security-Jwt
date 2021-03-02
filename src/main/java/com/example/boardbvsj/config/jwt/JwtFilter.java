@@ -1,4 +1,4 @@
-package com.example.boardbvsj.jwt;
+package com.example.boardbvsj.config.jwt;
 
 
 import lombok.RequiredArgsConstructor;
@@ -27,14 +27,10 @@ public class JwtFilter extends GenericFilterBean {
             throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
         String jwt = resolveToken(httpServletRequest);
-        String requestURI = httpServletRequest.getRequestURI();
 
-        if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
+        if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt,httpServletRequest)) {
             Authentication authentication = tokenProvider.getAuthentication(jwt);
             SecurityContextHolder.getContext().setAuthentication(authentication);
-        } else {
-            System.out.println("유효한 토큰이 없습니다." + requestURI);
-
         }
 
         filterChain.doFilter(servletRequest, servletResponse);
