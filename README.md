@@ -10,14 +10,14 @@
 
 ---
 # 개발 환경
-######Back
+###### Back
 - SpringBoot 2.4.2
 - SpringSecurity 2.4.2
 - SpringWeb 2.4.2
 - SpringDataJpa 2.4.2
 - QueryDsl 4.4.0
 
-######Front
+###### Front
 - Vue 2.6.11
 - Vuex 3.6.0
 - Vuetify 2.2.11
@@ -48,20 +48,20 @@
 ⇒ 추천한 회원 정보와 추천된 게시글 정보를 가지고 있음
 
 ###### 구현 기능
-Member → 회원 등록, 로그인, 권한이 없는 사용자의 접근 제한
+- Member → 회원 등록, 로그인, 권한이 없는 사용자의 접근 제한
 
-Board → 조회, 등록, 수정, 삭제, 추천 수에 따른 인기 게시판으로 이동,검색 
+- Board → 조회, 등록, 수정, 삭제, 추천 수에 따른 인기 게시판으로 이동,검색 
 
-Reply → 조회, 등록, 수정, 삭제
+- Reply → 조회, 등록, 수정, 삭제
 
-Like → 중복되지않는 게시글 추천
+- Like → 중복되지않는 게시글 추천
 
-Validate → Spring Validation 사용으로 유효성 검증을 통해, 1차로 Front에서 처리한 뒤 
+- Validate → Spring Validation 사용으로 유효성 검증을 통해, 1차로 Front에서 처리한 뒤 
 마지막으로 다시 요청의 유효성을 검증함.
 
-Authentication, Authorization → 로그인 시 Jwt 토큰 발급, 로컬 스토리지에 저장 후 js 인터셉터를 활용해 요청할 때마다 헤더에 담아 전송해 사용자의 인증과 권한 부여
+- Authentication, Authorization → 로그인 시 Jwt 토큰 발급, 로컬 스토리지에 저장 후 js 인터셉터를 활용해 요청할 때마다 헤더에 담아 전송해 사용자의 인증과 권한 부여
 
-관리자 - ADMIN권한으로 모든 게시글과 댓글에 관여할 수 있음.
+- 관리자 - ADMIN권한으로 모든 게시글과 댓글에 관여할 수 있음.
 
 ---
 # API
