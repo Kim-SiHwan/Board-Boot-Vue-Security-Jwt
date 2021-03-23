@@ -84,4 +84,4 @@
 - PUT   /api/replies : 댓글 수정
 
 ###### Like
-- POST   /api/like : 게시글 추천
+- POST   /api/like : 게시글 추천 ( 추천이 되어있을 땐 추천 취소 )
